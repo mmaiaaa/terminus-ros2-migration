@@ -1,0 +1,34 @@
+
+<launch>
+
+  <!--anbot_bringup-->  
+  <include file="$(find anbot_bringup)/launch/anbot_bringup.launch" />
+
+  <!-- Map server-->
+  <arg name="map_file" default="$(find anbot_navigation_config)/maps/mymap.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!--MRPT localization-->
+  <include file="$(find mrpt_localization)/launch/anbot_mrpt.launch"/> 
+  
+
+  <!--UWB localization
+  <include file="$(find uwb_mrpt_localization)/launch/uwb_mrpt_localization.launch"/> 
+  <node pkg="uwb_localization" type="uwb_localization_node" name="uwb_localization"/>
+  -->
+
+  <!--anbot_obstacle-->
+  <include file="$(find anbot_obstacle)/launch/anbot_obstacle.launch"/>
+  
+  <!--调用move_base脚本-->
+  <include file="$(find anbot_bringup)/launch/includes/move_base.launch.xml"/>
+
+  <!--导航策略模块-->
+  <node name="navigation_optimation_node" pkg="navigation_optimation" type="navigation_optimation_node" output="screen"/>
+
+  <include file="$(find apriltags_ros)/launch/example.launch"/>
+
+  <!--node pkg="anbot_control" type="anbotControl" name="anbotControl" /-->
+
+</launch>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0"?> 
+<robot name="anbot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Mobile Base -->
+  <xacro:include filename="$(find anbot_model_config)/urdf/mobile_base/anbot_base.urdf.xacro"/>
+  <!-- 3D Sensor -->
+  <xacro:include filename="$(find anbot_model_config)/urdf/sensors/kinect.urdf.xacro"/>  <!--Kinect-->
+  <!--xacro:include filename="$(find anbot_model_config)/urdf/sensors/asus_xtion_pro.urdf.xacro"/--> <!--Asus xtion PRO-->
+
+  <anbot_mobile_base/>
+  <!--define the tf between the Mobile Base and the 3D Sensor-->
+  <sensor_kinect  parent="base_link"/>
+  
+</robot>
+

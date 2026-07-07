@@ -1,0 +1,2 @@
+FtpRequest  request
+string    reply

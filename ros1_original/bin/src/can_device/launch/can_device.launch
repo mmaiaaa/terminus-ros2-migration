@@ -1,0 +1,63 @@
+<launch>
+  <!--HardwardCfg  0:usb to can  1:anobt1 serial   2:TX2 on board  can  3:Udp virtual Can  4:FDC serial 5:RK3399 singal Can 6:RK3399 dual Can -->
+  <!--ProtocolCfg  0:primary can protocol  1: distributed can protocol           -->
+  <!--sonarChannelNum  ANBOT2A:8       APV2B:6     APV2C:4    APV2D:4    APV3A:  -->
+  <!--batteryModelCfg  0:shirui tuopai     1: new      2:baifan  3:jinggong-->
+  <!--singlePointLaserChlNumCfg  2:laser fall     4: laser fall + laser touch    -->
+  <arg name="HardwardCfg"      default="6" />
+  <arg name="ProtocolCfg"       default="0" />  
+  <arg name="chassisSerialPort" default="/dev/ttyS0" />
+  <arg name="sensorSerialPort"  default="/dev/ttyS3" />
+  <arg name="sonarChannelNum"   default="4" />
+  <arg name="batteryModelCfg"   default="0" />
+  <arg name="singlePointLaserChlNumCfg"   default="2" />
+  <arg name="robotModelCfg"   default="0" />
+  <arg name="envModelCfg"   default="0" />
+  <arg name="aoaEnable"   default="0" />
+  <arg name="aoa_rectify_angle"   default="0" />
+  <arg name="aoaSerialPort" default="/dev/ttyUSB0" />    
+  <arg name="lanuchInIdle"   default="0" />
+  <arg name="can0Baudrate"   default="500000" />
+  <arg name="can1Baudrate"   default="500000" />
+  
+
+  
+  
+  <node  pkg="can_device"     type="can_device_node"     name="can_device_node" respawn="true">
+  
+  <param name="HardwardCfg"             value="$(arg HardwardCfg)"/>
+  <param name="ProtocolCfg"             value="$(arg ProtocolCfg)"/>
+  <param name="chassisSerialPort"       type="string"    value="$(arg chassisSerialPort)"/>
+  <param name="sensorSerialPort"        type="string"    value="$(arg sensorSerialPort)"/>
+  <param name="sonarChannelNum"         value="$(arg sonarChannelNum)"/>
+  <param name="batteryModelCfg"         value="$(arg batteryModelCfg)"/>
+  <param name="singlePointLaserChlNumCfg"         value="$(arg singlePointLaserChlNumCfg)"/>
+  <param name="robotModelCfg"           value="$(arg robotModelCfg)"/>
+  <param name="envModelCfg"             value="$(arg envModelCfg)"/>
+
+  <param name="aoaEnable"               value="$(arg aoaEnable)"/>
+  <param name="aoa_rectify_angle"       value="$(arg aoa_rectify_angle)"/>
+  <param name="aoaSerialPort"           value="$(arg aoaSerialPort)"/>
+  
+  <param name="lanuchInIdle"             value="$(arg lanuchInIdle)"/>
+  <param name="can0Baudrate"             value="$(arg can0Baudrate)"/>
+  <param name="can1Baudrate"             value="$(arg can1Baudrate)"/>
+ 
+
+  <param name="guardian" value="0.42"/> 
+  <param name="configP"  value="16" />
+  <param name="configI"  value="14" />
+  <param name="configD"  value="0" />
+  <param name="cControlCurrentLimite"  value="8" />
+  <param name="configStep"  value="20" />
+  <param name="configRevert"  value="0" />
+  
+  <param name="duojiRecLF"  value="0" />
+  <param name="duojiRecRF"  value="0" />
+  <param name="duojiRecLB"  value="0" />
+  <param name="duojiRecRB"  value="0" />
+  <param name="imu_direct" value="1" />
+  </node>
+
+</launch>
+

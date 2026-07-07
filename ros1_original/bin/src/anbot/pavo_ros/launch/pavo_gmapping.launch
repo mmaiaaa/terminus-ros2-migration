@@ -1,0 +1,11 @@
+<launch>
+  <arg name="filter" default="0" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pavo_ros)/rviz/pavo_scan.rviz" />
+  <node name="PavoScanNode" pkg="pavo_ros" type="pavo_scan_node" output="screen" >
+  <param name="parking_x" type="int" value="$(arg filter)" />
+  </node>
+  <node pkg="pavo_ros" type="pavo_odom_pub" name="OdomPublisher"/>
+  <node pkg="tf" type="static_transform_publisher" name="static_broadcaster" args="0.1 0 0.1 0 0 0 base_link base_laser 30" />
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen"/>
+
+</launch>

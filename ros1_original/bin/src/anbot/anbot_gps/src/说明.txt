@@ -1,0 +1,1 @@
+anbot_gps_node.cpp 修改日志,用ANBOT_LOG_ERROR记录gpspose数据以便测试

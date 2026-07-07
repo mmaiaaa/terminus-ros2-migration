@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+<!--速腾rs-bpearl32线补盲激光雷达-->
+	<include file="$(find rslidar_pointcloud)/launch/rs_bpearl.launch" />
+
+	<node pkg="cloud2scan" name="cloud2scan_node" type="cloud2scan_node"  output="screen">
+		<!--坐标系名称--> <!--从urdf获取设备在机器人上的安装位置-->
+		<param name="device_frame" value="rslidar" type="str"/><!--设备坐标系或发布的消息的frame_id-->
+		<param name="base_frame"   value="base_link" type="str"/><!--机器人本体坐标系-->
+		<!--base_link到device_frame的坐标变换-->
+		<param name="source" value="1" type="bool" /> <!--设备坐标来源 0:从urdf获取 1:通过下面的参数获取-->
+		<param name="x0" value="0.20" type="double" /> 
+		<param name="y0" value="0.00" type="double" />
+		<param name="z0" value="0.42" type="double" />
+		<param name="yaw"   value="0"  type="double"/> <!--采用3-2-1的旋转顺序-->
+		<param name="pitch" value="78" type="double"/>
+		<param name="roll"  value="0"  type="double"/>
+		<!--点云范围滤波，均相对于base_link-->
+		<param name="x_min" value="0.25"  type="double"/> <!--用于盲区或体内滤波,过滤(-x_min,x_min)区间的点-->
+		<param name="y_min" value="0.30"  type="double"/> <!--用于体内滤波,过滤(-y_min,y_min)区间的点 -->
+ 		<param name="z_min" value="0.10" type="double" />  <!--高度范围，只有z_max>z_min时才生效-->
+		<param name="z_max" value="2.50" type="double" />
+		<param name="z_min_forloc" value="0.25" type="double" /> <!--定位用激光数据最小高度-->
+		<param name="angHmin" value="-90" type="double"/> <!--水平视角，只有angHmax>angleHmin时才生效-->
+		<param name="angHmax" value="90"  type="double"/>
+		<param name="angVmin" value="0" type="double"/> <!--垂直视角,只有angVmax>angVmin时才生效-->
+		<param name="angVmax" value="0"  type="double"/>
+		<!--手臂参数-->
+		<param name="arm_x" value="-0.15" type="double" />
+		<param name="arm_y" value="0.30" type="double" />
+		<param name="arm_z" value="0.50" type="double" />
+		<param name="arm_L" value="0.40" type="double" />
+		<param name="arm_h" value="0.20" type="double" />
+		<param name="leftAngleError" value="0.0" type="double"/>
+		<param name="rightAngleError" value="0.0" type="double"/>
+		<param name="arm_filter_switch" value="false" type="bool"/> <!--动态滤波开关-->		
+		<!--topic名称-->
+		<param name="input" value="rslidar_points" type="str" /> <!--输入的点云topic名称-->
+		<param name="output_forloc"   value="scan"   type="str" /> <!--定位专用二维点云-->
+		<param name="output_forob"    value="/pclob/scan" type="str" /> <!--避障专用二维点云-->
+	</node>
+</launch>

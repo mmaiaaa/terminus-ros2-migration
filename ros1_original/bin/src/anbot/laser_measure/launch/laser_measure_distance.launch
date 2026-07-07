@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="laser_measure" type="laser_measure_node" name="laser_measure_node" output="screen">
+        <param name="serial_port" value="/dev/laser" type="string" />
+        <param name="baudrate"    value="115200"   type="int" />
+    </node>
+</launch>

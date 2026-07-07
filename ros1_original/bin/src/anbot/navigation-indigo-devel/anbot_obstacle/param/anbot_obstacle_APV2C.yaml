@@ -1,0 +1,29 @@
+
+max_speed:  0.8              # 最大线速度
+min_speed:  0.0               # 最小线速度
+max_turn_speed: 0.55          # 最大角速度
+robot_radius: 0.4            # 机器人半径,应稍大于实际机器人半径
+safe_radius: 0.55             # 侧面安全距离，前方安全距离结合该值和避障前探角度得出
+tolerance_distance: 0.6      # 容忍距离，即机器人离目标点小于这个距离，则认为已经到了
+tolerance_yaw: 0.3          # 容忍弧度，即机器人离目标弧度小于这个值，则认为已经到了
+obstacleavoid_enable: 1      #避障功能是否开启
+point_get_distance: 0.5     #路径上的点到达判定距离      
+obstacle_detect_front_angle: 7    #避障前探角度
+limit_speed_distance: 0.46     #速度限制启动障碍距离、严禁修改！
+stopTimeThreshold : 300               #300s 5min
+stopDistanceThreshold : 1.5  #1 M
+roy_speed_mat_iput: [0.0, 2.0, 3.0, 6.0, 10.0, 30.0, 180.0]
+roy_speed_mat_oput: [0.0, 0.08, 0.15, 0.3, 0.5,  0.8,  1.0]
+touch_enable: 0
+line_speed_mat_iput: [0.0, 15.0, 30.0, 50, 70, 90, 110.0]
+line_speed_mat_out: [1.0, 0.7, 0.55, 0.4, 0.25, 0.15, 0.0]
+product_type: 1
+tail_lenth: 0.828   #中心轴至尾长，前驱APV专用属性
+tail_width: 0.35  #APV尾部宽度
+speed_add_step: 0.4
+closure_append_dist: 0.1
+robot_width: 0.8
+robot_lenth: 1.16
+_u1: 0.5                  # difference between goal and robot
+_u2: 0.3                 # difference current direction
+_u3: 0.2

@@ -1,0 +1,37 @@
+<!--demo-->
+<launch>
+  <node name="obstacle_extractor" pkg="obstacle_detector" type="obstacle_extractor_node">
+    <param name="active"               value="false"/>
+    <param name="use_scan"             value="true"/>
+    <param name="use_pcl"              value="false"/>
+
+    <param name="use_split_and_merge"    value="true"/>
+    <param name="circles_from_visibles"  value="true"/>
+    <param name="discard_converted_segments" value="true"/>
+    <param name="transform_coordinates"  value="true"/>
+
+    <param name="min_group_points"     value="5"/>
+
+    <param name="max_group_distance"   value="0.1"/>
+    <param name="distance_proportion"  value="0.00628"/>
+    <param name="max_split_distance"   value="0.2"/>
+    <param name="max_merge_separation" value="0.2"/>
+    <param name="max_merge_spread"     value="0.2"/>
+    <param name="max_circle_radius"    value="0.6"/>
+    <param name="radius_enlargement"   value="0.3"/>
+
+    <param name="frame_id"             value="map"/>
+    <param name="p1_x"             value="-0.75"/>
+    <param name="p1_y"             value="-0.20"/>
+    <param name="p2_x"             value="-0.75"/>
+    <param name="p2_y"             value="0.20"/>
+    
+    <param name="p3_x"             value="-0.50"/>
+    <param name="p3_y"             value="0.30"/>
+    <param name="p4_x"             value="-0.50"/>
+    <param name="p4_y"             value="-0.30"/>
+    <param name="max_avoid_angle"             value="45"/>
+    <param name="max_avoid_y"             value="0.5"/>
+    <param name="avoid_front_charge_dis"             value="0.15"/> <!--bubizhangquyu-->
+  </node>
+</launch>

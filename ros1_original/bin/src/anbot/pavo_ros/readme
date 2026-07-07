@@ -1,0 +1,42 @@
+###################################
+#功能说明
+#在Ubuntu下呈现雷达的演示图像
+###################################
+使用方法：
+1.在系统中安装ros环境，具体安装方法参考下面连接：
+  安装链接：http://wiki.ros.org/kinetic/Installation/Ubuntu
+  搭建ros工程链接：http://wiki.ros.org/cn/ROS/Tutorials/InstallingandConfiguringROSEnvironment
+  
+2.将pavo_ros下的code拷贝到ros工程目录下的src目录中
+
+3.编译工程
+  catkin_make
+  
+4.设置环境变量
+  source devel/setup.sh
+  
+5.配置上位机IP
+  与雷达连接的网卡IP：默认上位机IP配置为IP10.10.10.100
+  
+6.配置雷达参数
+  打开pavo_ros/launch/pavo_scan_param.yaml文件
+  内容如下：
+  motor_speed: 15
+  merge_coef: 4
+  motor_speed取值为10、15、20、25、30中之一
+  merge_coef取值为1、2、4、8中之一
+
+7.查看运行程序
+  1).XYZ坐标系显示
+    roslaunch pavo_ros pavo_scan_view.launch [filter:=0|1]
+    filter:指示开启还好是关闭过滤拖尾模式，默认关闭
+    开启:filter:=1
+    关闭:filter:=0 (默认）
+  2).极坐标系显示
+    roslaunch pavo_ros pavo_pcd_view.launch
+  3).运行gmapping（运行此功能需要安装gmapping模块）
+	roslaunch pavo_ros pavo_gmapping.launch
+	
+8.其他
+  本程序支持使用roslaunch来启动节点并通过xml文件配置参数，
+  如果使用rosrun来启动节点，参数使用的时默认配置                                        

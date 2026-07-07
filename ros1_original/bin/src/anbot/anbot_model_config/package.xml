@@ -1,0 +1,21 @@
+<package>
+  <name>anbot_model_config</name>
+  <version>1.1.0</version>
+  <description>
+     anbot_bringup provides roslaunch scripts for starting the Anbot base and the sensors!
+  </description>
+  <maintainer email="289560202@qq.com">Bo Rao</maintainer>
+  <license>BSD</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>urdf</build_depend>
+  <build_depend>xacro</build_depend>  
+
+  <run_depend>urdf</run_depend>
+  <run_depend>xacro</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>openni_launch</run_depend>
+  <run_depend>linux_hardware</run_depend>
+  <run_depend>depthimage_to_laserscan</run_depend>
+
+</package>

@@ -1,0 +1,226 @@
+<launch>
+
+  <!--Anbot base node and Velocity mux-->
+  <!-- APV3 
+    param name="left_wheel_diameter" value="0.255" />
+    <param name="right_wheel_diameter" value="0.255" />
+    <param name="wheel_guardian" value="0.433" />  0.453-0.02
+  -->
+
+  <!--odom_source  0:can chassisOdom  1:imu  2:ronghe  3:mapan  1针对gnw_ins进行了修改，2不好用，3仅适用于两轮-->
+  <node pkg="anbot_base_control" type="anbot_base_node" name="anbot_base_node"  respawn="true" output="screen">
+    <remap from="cmd_vel" to="anbot_cmd_vel"/>
+    <param name="serial_port"  value="/dev/ttyS2" />
+    <param name="left_wheel_diameter" value="0.231" />
+    <param name="right_wheel_diameter" value="0.231" />
+    <param name="wheel_guardian" value="0.42" />
+    <param name="odom_source" value="0" />
+  </node>
+
+
+  <!--can_device -->
+  <!--HardwardCfg  0:usb to can  1:serial  2:TX2 on board can  3:Udp virtual Can  4:FDC serial 5:RK3399 singal Can 6:RK3399 dual Can-->
+  <!--ProtocolCfg  0:primary can protocol       1: distributed can protocol      -->
+  <!--sonarChannelNum  ANBOT2A:8       APV2B:6     APV2C:4    APV2D:4    APV3A:  -->
+  <!--batteryModelCfg  0:shirui tuopai     1: shiyan     2:baifan  3:jinggong-->
+  <!--singlePointLaserChlNumCfg  2:laser fall     4: laser fall + laser touch    -->
+  <!--robotModelCfg  0:Anbot,APV2 APV3,APVS       1: APVS protype    -->
+  <!--envModelCfg    0:old  environment  board    1: new  environment  board   -->
+  <!--lanuchInIdle   0:lanuch in  emg             1: lanuch  in  idle   2:do nothing   -->
+  <include file="$(find can_device)/launch/can_device.launch"> 
+  <arg name="HardwardCfg"      default="6" />
+  <arg name="ProtocolCfg"      default="1" />  
+  <arg name="chassisSerialPort" default="/dev/ttyS0" />
+  <arg name="sensorSerialPort"  default="/dev/ttyS3" /> 
+  <arg name="sonarChannelNum"   default="2" />
+  <arg name="batteryModelCfg"   default="0" />
+  <arg name="singlePointLaserChlNumCfg"   default="2" />
+  <arg name="robotModelCfg"     default="0" />
+
+  <arg name="aoaEnable"           default="0" />
+  <arg name="aoa_rectify_angle"   default="8.0" />
+  <arg name="aoaSerialPort"       default="/dev/ttyUSB0" />
+  
+  <arg name="envModelCfg"         default="1" />
+  <arg name="lanuchInIdle"        default="0" />
+  <arg name="can0Baudrate"        default="500000"/>
+  <arg name="can1Baudrate"        default="125000"/>
+  </include>
+  
+  
+  <!--hc GPS-->
+  <include file="$(find hc_gps)/launch/hc_gps.launch"/>
+  
+  
+  <!--bd GPS
+  <include file="$(find bd_gps)/launch/bd_gps.launch"/>
+  -->
+
+
+  <!--rplidar laser
+  <include file="$(find rplidar_ros)/launch/rplidar.launch"/> 
+  -->
+
+
+  <!--installtype  0:normal 1:Reverse   -->
+  <!--ls01b laser
+  <include file="$(find ls01b)/launch/ls01b.launch"> 
+	<arg name="serial_port" default="/dev/ttyUSB0"/> 
+	<arg name="installtype" default="0" />
+   </include>
+  -->
+
+
+  <!--lslidar_n301
+  <include file="$(find lslidar_n301_decoder)/launch/lslidar_n301.launch"> 
+   </include>
+  -->
+
+
+  <!--normalOrReverse 1:Reverse  -1:normal -->
+  <!--hokuyo laser  
+  <node pkg="urg_node" name="hokuyo_lidar" type="urg_node">
+      <param name="ip_address" value="192.168.113.107"/>
+      <param name="startDetal" value="90"/>
+      <param name="normalOrReverse" value="-1"/>
+  </node>
+  -->
+
+
+  <!--星秒激光雷达-->
+  <!--使用/scan_urg处理第二个激光雷达数据，为兼容设备坐标名称取hokuya-->
+  <!--pavo_ros 
+  <node pkg="pavo_ros" name="pavo_scan_node" type="pavo_scan_node" respawn="true">
+     <param name="ang_min"      value="-70" />   
+     <param name="ang_max"      value="70" />
+     <param name="host_ip"      value="192.168.113.102" />
+     <param name="device_ip"    value="192.168.113.107" />
+     <param name="topic_name"   value="scan" />
+     <param name="frame_id"     value="laser" />
+  </node>
+  -->
+
+
+
+  <!-- 0:normal  1:reverse   -->
+  <!--lms1xx
+  <include file="$(find lms1xx)/launch/LMS1xx.launch">
+     <arg name="installtype" value="1" />
+  </include>
+  -->
+
+  <!--sick_tim
+  <include file="$(find sick_tim)/launch/sick_tim561_2050101.launch" />
+  -->
+
+
+  <!-- velodyne do not use!!!!! by mingzhen 
+  <include file="$(find but_velodyne_proc)/launch/laserscan_node.launch" />  
+  -->
+
+
+  <!-- velodyne_lidar_16 
+  <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch">
+	<arg name="device_ip" value="192.168.113.107" />
+	<arg name="rpm" value="800" />
+  </include>
+  -->
+  
+  
+  <!-- rs_lidar_16 -->
+  <include file="$(find rslidar_pointcloud)/launch/rs_lidar_16.launch"/>
+  
+
+  <!-- rs_bpearl
+  <include file="$(find cloud2scan)/cloud2scan.launch"/> -->
+  
+  
+  <!-- ls_lidar_16
+  <include file="$(find lslidar_c16_decoder)/launch/lslidar_c16.launch"/>
+  -->
+
+
+  <!-- velodyne_pcl cover to laserscan, min_z:low zhangai gaodu
+  <include file="$(find anbot_pcl2scan)/launch/anbot_pcl2scan.launch">
+  	<arg name="input"      value="velodyne_points" />
+  	<arg name="ridar_error_turn"      value="0" />
+  	<arg name="ang_min"      value="-90" />
+  	<arg name="ang_max"      value="90" />
+	<arg name="forloc_min_z"      value="0.10" />
+	<arg name="forloc_max_z"      value="30.0" />
+	<arg name="min_z" value="0.12" />
+	<arg name="max_z" value="1.6" />
+	<arg name="best_range"      value="75.0" />
+	<arg name="ground_mode"      value="0" />
+	<arg name="fall_detect_height"      value="-0.20" />
+	<arg name="apvs_mapping_filter"      value="0" />
+  </include>
+  -->
+
+
+  <!-- rslidar_pcl cover to laserscan, min_z:low zhangai gaodu-->
+  <include file="$(find anbot_pcl2scan)/launch/anbot_pcl2scan.launch">
+  	<arg name="input"      value="rslidar_points" />   
+  	<arg name="ridar_error_turn"      value="0" />    
+  	<arg name="ang_min"      value="-100" />   
+  	<arg name="ang_max"      value="102" />   
+  	<arg name="forloc_min_z"      value="0.10" />
+	<arg name="forloc_max_z"      value="30.0" />
+	<arg name="min_z" value="0.12" />
+	<arg name="max_z" value="1.6" />
+	<arg name="best_range"      value="75.0" />
+	<arg name="ground_mode"      value="0" />
+	<arg name="fall_detect_height"      value="-0.20" />
+	<arg name="apvs_mapping_filter"      value="0" />
+  </include> 
+  
+  
+  
+  <!-- lslidar_pcl cover to laserscan, min_z:low zhangai gaodu
+  <include file="$(find anbot_pcl2scan)/launch/anbot_pcl2scan.launch">
+  	<arg name="input"      value="/lslidar_point_cloud" />
+  	<arg name="ridar_error_turn"      value="0" />
+  	<arg name="ang_min"      value="-90" />
+  	<arg name="ang_max"      value="90" />
+	<arg name="forloc_min_z"      value="0.10" />
+	<arg name="forloc_max_z"      value="30.0" />
+	<arg name="min_z" value="0.12" />
+	<arg name="max_z" value="1.6" />
+	<arg name="best_range"      value="75.0" />
+	<arg name="ground_mode"      value="0" />
+	<arg name="fall_detect_height"      value="-0.20" />
+  </include> 
+  -->
+  
+
+  <!--gnw imu
+    <include file="$(find gnw_imu)/launch/gnw_imu.launch">
+     <arg name="data_type" value="0" />
+     <arg name="debug_output" value="0" />
+     <arg name="serial_port" value="/dev/imu" />
+    </include>
+  -->
+  
+  
+  <!--laser-fall
+  <node pkg="laser_measure" type="laser_measure_node" name="laser_measure">
+      <param name="serial_port" value="/dev/ttyUSB0"/>
+  </node>
+  -->
+    
+
+  <!--jy imu  
+  <include file="$(find jy_imu)/launch/jy_imu.launch" />
+  -->
+
+ 
+  <!--kinect
+  <include file="$(find anbot_bringup)/launch/includes/3dsensor.launch">
+    <arg name="rgb_processing" value="true" />
+    <arg name="depth_registration" value="true" />
+    <arg name="depth_processing" value="true" />
+    <arg name="scan_topic" value="/kinect_scan" />
+  </include>
+  -->
+  
+</launch>

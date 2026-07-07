@@ -1,0 +1,9 @@
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/anbot_model_config/urdf/anbot.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/anbot_model_config/urdf/mobile_base/anbot_base.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/anbot_model_config/urdf/property/camera_properties.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/anbot_model_config/urdf/property/common_properties.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/anbot_model_config/urdf/sensors/asus_xtion_pro.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/anbot_model_config/urdf/sensors/kinect.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/LMS1xx-master/urdf/sick_lms1xx.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/sick_tim-indigo/urdf/example.urdf.xacro
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/sick_tim-indigo/urdf/sick_tim.urdf.xacro

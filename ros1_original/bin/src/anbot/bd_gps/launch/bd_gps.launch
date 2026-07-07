@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="bd_gps" type="bd_gps_node" name="bd_gps_node" output="screen">
+        <param name="serial_port" value="/dev/gps" type="string" />
+        <param name="baudrate"    value="115200"   type="int" />
+	<param name="ifdebug"    value="false"   type="bool" />
+    </node>
+</launch>

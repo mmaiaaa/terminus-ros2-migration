@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>scan2dsegments_legs_srl2d</name>
+    <version>1.4.0</version>
+    <description>was'pclmsg_srl2d_segments' Converts a 3D Point Cloud into a 2D laser scan. Extended-jump-distance clustering on scan2D using dynamic threshold wrt 0.45. eg' Kinect appear like a laser scanner for 2D-based algorithms (e.g. laser-based SLAM).</description>
+
+    <maintainer email="paul@bovbel.com">Paul Bovbel</maintainer>
+    <author email="paul@bovbel.com">Paul Bovbel</author>
+    <author>Tully Foote</author>
+
+    <license>BSD</license>
+
+    <url type="website">http://ros.org/wiki/perception_pcl</url>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>message_filters</depend>
+    <depend>roscpp</depend>
+    <depend>sensor_msgs</depend>
+    <depend>std_msgs</depend>
+    <depend>geometry_msgs</depend>
+    <depend>spencer_tracking_msgs</depend>
+    <depend>libopencv-dev</depend>
+    <depend>tf2</depend>
+    <depend>tf2_ros</depend>
+  
+    <depend>message_runtime</depend>
+  
+    <test_depend>roslint</test_depend>
+
+</package>

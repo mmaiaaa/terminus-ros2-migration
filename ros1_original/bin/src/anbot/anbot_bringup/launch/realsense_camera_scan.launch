@@ -1,0 +1,10 @@
+<launch>
+
+  <!--realsense2_camera   point cloud-->
+  <include file="$(find realsense2_camera)/launch/demo_pointcloud.launch"/>
+
+  <!-- points   to scan -->
+  <include file="$(find realsense_points)/realsense_points.launch"/>
+ 
+  
+</launch>

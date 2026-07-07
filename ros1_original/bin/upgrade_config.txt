@@ -1,0 +1,17 @@
+###############升级配置文件#####################
+#发布新的主控版本时，需根据机器人具体硬件配置，更改该文件
+#将机器人内需要保留的配置文件路径，写在下面
+#每行一个文件路径
+#可以用  #  在每行开始屏蔽该行,例如下面这行
+#system/bin/config/anbotcontrol.ini  这个配置文件 包含机器人ID  需保留
+#system/bin/src/anbot/anbot_navigation_config/maps/mymap.pgm   需保留
+#system/bin/src/anbot/anbot_navigation_config/maps/mymap.yaml  需保留
+
+system/bin/config/anbotcontrol.ini
+system/bin/src/anbot/anbot_navigation_config/maps/mymap.pgm
+system/bin/src/anbot/anbot_navigation_config/maps/mymap.yaml
+#system/bin/src/anbot/anbot_bringup/launch/hardware.launch
+#system/bin/src/anbot/anbot_bringup/launch/anbot_bringup.launch
+#system/bin/src/anbot/anbot_bringup/launch/amcl.launch
+#system/bin/src/anbot/anbot_bringup/launch/includes/move_base.launch.xml
+#system/bin/src/anbot/navigation_indigo_devel/anbot_obstacle/param/anbot_obstacle.yaml

@@ -1,0 +1,44 @@
+
+max_speed:  0.8              # 最大线速度
+min_speed:  0.0               # 最小线速度
+max_turn_speed: 0.8          # 最大角速度
+robot_radius: 0.45            # 机器人半径,应稍大于实际机器人半径
+safe_radius: 0.55             # 侧面安全距离，前方安全距离结合该值和避障前探角度得出
+tolerance_distance: 0.7      # 容忍距离，即机器人离目标点小于这个距离，则认为已经到了
+tolerance_yaw: 0.3          # 容忍弧度，即机器人离目标弧度小于这个值，则认为已经到了
+obstacleavoid_enable: 1      #避障功能是否开启
+point_get_distance: 0.7     #路径上的点到达判定距离      
+obstacle_detect_front_angle: 7    #避障前探角度
+limit_speed_distance: 0.38     #速度限制启动障碍距离、严禁修改！
+stopTimeThreshold : 300               #300s 5min
+stopDistanceThreshold : 1.5  #1 M
+roy_speed_mat_iput: [0.0, 2.0, 3.0, 6.0, 10.0, 30.0, 180.0]
+roy_speed_mat_oput: [0.0, 0.08, 0.15, 0.26, 0.45,  0.7,  1.0]
+touch_enable: 1
+line_speed_mat_iput: [0.0, 15.0, 30.0, 50, 70, 90, 110.0]
+line_speed_mat_out: [1.0,  0.70,  0.55,  0.5, 0.4, 0.35, 0.0]
+product_type: 3
+tail_lenth: 0.42   #中心轴至尾长，前驱APV专用属性
+tail_width: 0.35  #APV尾部宽度
+head_lenth: 0.42
+head_width: 0.35
+speed_add_step: 1.4 
+closure_append_dist: 0.1
+robot_width: 0.70
+robot_lenth: 0.84
+apvs_filter_angle: 6.5
+apvs_brace1_angle: -33.16
+apvs_brace2_angle: -141.84
+apvs_brace3_angle: 33.16
+apvs_brace4_angle: 141.84
+ctl_delay: 0.25
+ctl_delay_roy: 0.2
+fall_detect_enable: 1 
+fall_detect_height: 0.2
+low_detect_enable: 1 
+mapping_speed_limit: 0.5
+zero_speed_limit: 0.9
+smallspace_autopath: 0
+mw_detect_enable: 1
+wheel_base: 0.55 # 轴距
+wheel_gurding_front: 0.42 # 轮距

@@ -1,0 +1,14 @@
+Header header
+float64 safe_radius
+float64 tolerance_distance
+float64 point_get_distance
+float64 closure_append_dist
+uint32 fall_detect_enable
+float64 fall_detect_height
+float64 apvs_filter_angle
+float64 apvs_brace1_angle
+float64 apvs_brace2_angle
+float64 apvs_brace3_angle
+float64 apvs_brace4_angle
+
+

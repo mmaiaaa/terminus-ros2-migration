@@ -1,0 +1,35 @@
+<launch>
+	 <arg name="min_z" default="0.10" />
+	 <arg name="max_z" default="1.6" />
+	 <arg name="forloc_min_z" default="0.08" />
+	 <arg name="forloc_max_z" default="50.0" />
+	 <arg name="input" default="rslidar_points" />
+	 <arg name="ang_min" default="-110" />
+	 <arg name="ang_max" default="110" />
+	 <arg name="near_fill_dist" default="0.3" />
+	 <arg name="ridar_error_turn" default="0.0" />
+	 <arg name="best_range" default="80.0" />
+	 <arg name="ground_mode" default="0" />
+	 <arg name="fall_detect_height" default="-0.25" />
+	 <arg name="slam_laser_choice" default="0" />
+	 <arg name="apvs_mapping_filter" default="0" />
+   <node pkg="anbot_pcl2scan" type="anbot_pcl2scan" name="anbot_pcl2scan" respawn="true">
+        <param name="input" value="$(arg input)" />
+        <param name="min_z" value="$(arg min_z)" />
+        <param name="max_z" value="$(arg max_z)" />
+        <param name="ang_min" value="$(arg ang_min)" />
+        <param name="ang_max" value="$(arg ang_max)" />
+        <param name="near_fill_dist" value="$(arg near_fill_dist)" />
+        <param name="ridar_error_turn" value="$(arg ridar_error_turn)" />
+        <param name="forloc_min_z" value="$(arg forloc_min_z)" />
+        <param name="forloc_max_z" value="$(arg forloc_max_z)" />
+	<param name="best_range" value="$(arg best_range)" />
+	<param name="ground_mode" value="$(arg ground_mode)" />
+	<param name="fall_detect_height" value="$(arg fall_detect_height)" />
+	<param name="slam_laser_choice" value="$(arg slam_laser_choice)" />
+	<param name="apvs_mapping_filter" value="$(arg apvs_mapping_filter)" />	
+	<param name="voxelgridfilter_size"  value="0.025"/>
+	
+   </node>
+</launch>
+

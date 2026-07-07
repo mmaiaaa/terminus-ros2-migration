@@ -1,0 +1,17 @@
+
+<launch>
+
+  <!--AMCL localization-->
+  <include file="$(find anbot_bringup)/launch/amcl.launch"/>
+  
+  <!--MRPT localization 
+  <include file="$(find mrpt_localization)/launch/anbot_mrpt.launch"/> 
+  -->
+
+  <!--UWB localization
+  <include file="$(find uwb_mrpt_localization)/launch/uwb_mrpt_localization.launch"/> 
+  <node pkg="uwb_localization" type="uwb_localization_node" name="uwb_localization"/>
+  -->
+
+</launch>
+

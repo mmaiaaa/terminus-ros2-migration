@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+<robot name="anbot_mobile_base" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!--PRODUCT_TYPE:XS-->
+  <!-- Macro for Anbot body. Including Gazebo extensions, but does not include Kinect -->
+  <xacro:include filename="$(find anbot_model_config)/urdf/property/common_properties.urdf.xacro"/>
+  <xacro:property name="M_SCALE" value="0.01"/>
+  <property name="base_x" value="0.33" />
+  <property name="base_y" value="0.33" />
+
+  <xacro:macro name="anbot_mobile_base">
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <origin xyz="0 0 0.0102" rpy="0 0 0" />
+    <parent link="base_footprint"/>
+    <child link="base_link" />
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.10938" radius="0.178"/>
+      </geometry>
+      <origin xyz="0 0 0.05199" rpy="0 0 0"/>
+     </visual>
+     <collision>
+       <geometry>
+         <cylinder length="0.10938" radius="0.178"/>
+       </geometry>
+       <origin xyz="0.0 0 0.15949" rpy="0 0 0"/>
+     </collision>
+     <inertial>
+       <origin xyz="0.01 0 0"/>
+       <mass value="2.4"/> 
+       <inertia ixx="0.019995" ixy="0.0" ixz="0.0"
+                 iyy="0.019995" iyz="0.0" 
+                 izz="0.03675" />
+      </inertial>
+   </link>
+	
+   <!--rplidar-->
+   <joint name="laser" type="fixed">
+	<parent link="base_link"/>
+	<child link="laser"/>
+	 <origin xyz="0.45 0.0 0.46" />
+   </joint>
+    <link name="laser">	
+	    <visual>	
+	      <geometry>
+		<mesh filename="package://anbot_model_config/meshes/RPLIDAR-A1M1R1_withmotor.STL" scale=" 0.001 0.001 0.001"/>
+	      </geometry>
+	      <material name="Grey" />
+	    </visual>
+      </link>
+   
+   <!--rplidar-->   
+  <joint name="hokuya" type="fixed">
+	<parent link="base_link"/>
+	<child link="hokuya"/>
+	 <origin xyz=" 0.0 0.0 0.46" />
+   </joint>
+    <link name="hokuya">	
+	    <visual>	
+	      <geometry>
+		<mesh filename="package://anbot_model_config/meshes/RPLIDAR-A1M1R1_withmotor.STL" scale=" 0.001 0.001 0.001"/>
+	      </geometry>
+	      <material name="Grey" />
+	    </visual>
+      </link>
+      
+
+	  <!--velodyne-->
+     <link name="velodyne">	
+	    <visual>
+		 <geometry>  
+      	  <cylinder length="0.05" radius="0.04"></cylinder>  
+     	 </geometry>  
+	      <material name="Grey" />
+	    </visual>
+      </link>
+   <joint name="velodyne_joint" type="fixed">
+	<parent link="base_link"/>
+	<child link="velodyne"/>
+	<origin xyz=" 0.559 0.0 0.397" rpy="0 0 0" />
+   </joint>
+   
+  <!--rslidar-->
+     <link name="rslidar">	
+	    <visual>
+		 <geometry>  
+      	  <cylinder length="0.05" radius="0.04"></cylinder>  
+     	 </geometry>  
+	      <material name="Grey" />
+	    </visual>
+      </link>
+   <joint name="rslidar_joint" type="fixed">
+	<parent link="base_link"/>
+	<child link="rslidar"/>
+	<origin xyz=" 0.559 0.0 0.397" rpy="0 0 0" />
+   </joint> 	
+   	
+
+   <!--lslidar-->
+     <link name="lslidar">	
+	    <visual>
+		 <geometry>  
+      	  <cylinder length="0.05" radius="0.04"></cylinder>  
+     	 </geometry>  
+	      <material name="Grey" />
+	    </visual>
+      </link>
+   <joint name="lslidar_joint" type="fixed">
+	<parent link="base_link"/>
+	<child link="lslidar"/>
+	<origin xyz=" 0.0 0.0 0.46" rpy="0 0 0" />
+   </joint> 
+   
+    <!--sonar-->
+  <joint name="sonar_0" type="fixed">
+        <origin xyz="0.45 -0.35 0.5" rpy="0 0 -1.5707" />
+	<parent link="base_link"/>
+	<child link="sonar_0"/>
+    </joint>
+    <link name="sonar_0">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "blue">
+		  <color rgba = "0 0 1 1"/>
+		</material>
+     </visual>
+   </link>
+   
+    <joint name="sonar_1" type="fixed">
+        <origin xyz="-0.35 -0.35 0.8" rpy="0 0 -1.5707" />
+	<parent link="base_link"/>
+	<child link="sonar_1"/>
+    </joint>
+    <link name="sonar_1">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>
+      
+   
+    <joint name="sonar_2" type="fixed">
+        <origin xyz="-0.35 0.35 0.8" rpy="0 0 1.5707" /> <!--tail obstacle may yingxiang xingzou, add 0.2 to real param-->
+	<parent link="base_link"/>
+	<child link="sonar_2"/>
+    </joint>
+    <link name="sonar_2">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "yellow">
+		  <color rgba = "0.2 0.2 0 1"/>
+		</material>
+     </visual>
+   </link>
+   
+   <joint name="sonar_3" type="fixed">
+        <origin xyz="0.45 0.35 0.5" rpy="0 0 1.5707" />
+	<parent link="base_link"/>
+	<child link="sonar_3"/>
+    </joint>
+    <link name="sonar_3">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>
+
+
+  <!--millimeter-wave radar-->
+  <joint name="radar_0" type="fixed">
+        <origin xyz="0.139 0.277 0.65" rpy="0 0 0" />
+	<parent link="base_link"/>
+	<child link="radar_0"/>
+    </joint>
+    <link name="radar_0">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "blue">
+		  <color rgba = "0 0 1 1"/>
+		</material>
+     </visual>
+   </link>
+   
+    <joint name="radar_1" type="fixed">
+        <origin xyz="0.139 -0.277 0.65" rpy="0 0 0" />
+	<parent link="base_link"/>
+	<child link="radar_1"/>
+    </joint>
+    <link name="radar_1">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>
+      
+   
+    <joint name="radar_2" type="fixed">
+        <origin xyz="-0.795 0.0 0.35" rpy="0 0 -3.141592" /> <!--tail obstacle may yingxiang xingzou, add 0.2 to real param-->
+	<parent link="base_link"/>
+	<child link="radar_2"/>
+    </joint>
+    <link name="radar_2">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "yellow">
+		  <color rgba = "0.2 0.2 0 1"/>
+		</material>
+     </visual>
+   </link>
+
+   
+   <joint name="radar_3" type="fixed">
+        <origin xyz="-0.40 0.3 0.3" rpy="0 0 1.5707" />
+	<parent link="base_link"/>
+	<child link="radar_3"/>
+    </joint>
+    <link name="radar_3">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>
+
+   
+   <!--point laser-->
+   <joint name="laser_fall_left" type="fixed">
+        <origin xyz="0.422 0.247 0.577" rpy="0 -0.366 0.331" />
+	 <parent link="base_link"/>
+	 <child link="laser_fall_left"/>
+    </joint>
+    <link name="laser_fall_left">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>
+   
+   <joint name="laser_fall_right" type="fixed">
+        <origin xyz="0.422 -0.247 0.577" rpy="0 -0.366 -0.331" />
+	 <parent link="base_link"/>
+	 <child link="laser_fall_right"/>
+    </joint>
+    <link name="laser_fall_right">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>
+   <!--point laser low-->
+   <joint name="laser_low_left" type="fixed">
+        <origin xyz="0.0195 0.295 0.092" rpy="0 0 0" />
+	 <parent link="base_link"/>
+	 <child link="laser_low_left"/>
+    </joint>
+    <link name="laser_low_left">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>
+   
+   <joint name="laser_low_right" type="fixed">
+        <origin xyz="0.0195 -0.295 0.092" rpy="0 0 0" />
+	 <parent link="base_link"/>
+	 <child link="laser_low_right"/>
+    </joint>
+    <link name="laser_low_right">
+	  <visual>
+		<geometry>
+			<box size="0.02 0.02 0.02"/>
+		</geometry>
+		<material name = "black"/>
+     </visual>
+   </link>  
+
+
+  <!--gps-->
+    <joint name="gps" type="fixed">
+        <origin xyz="-0.645 0.0 1.345" rpy="0 -1.5 -1.212 " />
+	<parent link="base_link"/>
+	<child link="gps"/>
+    </joint>
+    <link name="gps">
+	  <visual>
+		<geometry>
+			<box size="0.04 0.04 0.04"/>
+		</geometry>
+		<material name = "red"/>
+     </visual>
+   </link>
+
+
+  </xacro:macro>
+</robot>

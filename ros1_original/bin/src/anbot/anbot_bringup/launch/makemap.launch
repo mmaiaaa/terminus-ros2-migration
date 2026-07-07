@@ -1,0 +1,12 @@
+<launch>
+
+  <!--   -->  
+  <include file="$(find anbot_bringup)/launch/anbot_bringup.launch" />
+
+  <include file="$(find anbot_bringup)/launch/includes/gmapping.launch.xml"/>
+  
+  <node pkg="turtlebot_teleop" type="turtlebot_teleop_key" name="turtlebot_teleop_key" launch-prefix="gnome-terminal -x">
+    <remap from="/turtlebot_teleop_key/cmd_vel" to="/anbot_cmd_vel"/>
+  </node>
+
+</launch>

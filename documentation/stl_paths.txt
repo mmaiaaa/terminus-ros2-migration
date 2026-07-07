@@ -1,0 +1,3 @@
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/LMS1xx-master/meshes/sick-lms1xx.stl
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/sick_tim-indigo/meshes/sick_tim310.stl
+/home/maia/TerminusRobot/ros1_original/bin/src/anbot/sick_tim-indigo/meshes/sick_tim551.stl

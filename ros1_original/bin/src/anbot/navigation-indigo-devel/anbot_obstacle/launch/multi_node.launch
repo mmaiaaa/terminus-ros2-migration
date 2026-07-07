@@ -1,0 +1,3 @@
+ <launch>
+ <node pkg="anbot_obstacle" type="multi_node" name="multi_node" output="screen"/>
+ </launch>

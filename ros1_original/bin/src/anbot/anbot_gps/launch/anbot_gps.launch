@@ -1,0 +1,19 @@
+<launch>
+    <node pkg="anbot_gps" type="anbot_gps_node" name="anbot_gps_node"  output="screen">
+        <param name="ori_longtitude" value="112.974342" type="double" />
+        <param name="ori_latitude"    value="28.245639"   type="double" />
+        <param name="target_longtitude" value="112.974365" type="double" />
+        <param name="target_latitude" value="28.245438" type="double" />
+	<param name="target1_longtitude" value="112.973364" type="double" />
+        <param name="target1_latitude" value="28.245547" type="double" />
+        <param name="ori_x"    value="32.3"   type="double" />
+        <param name="ori_y"    value="-10.3"   type="double" />
+        <param name="target_x"    value="12.2"   type="double" />
+        <param name="target_y"    value="-0.01"   type="double" />
+	<param name="target1_x"    value="75.75"   type="double" />
+        <param name="target1_y"    value="76.33"   type="double" />
+        <param name="angle_filter" value="0.002"  type="double"/>
+        <!--param name="m_distance" value ="0.0"  type="double"/-->
+	<param name="ifdebug" value ="false"  type="bool"/>
+    </node>
+</launch>

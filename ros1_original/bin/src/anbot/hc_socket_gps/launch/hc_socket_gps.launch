@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="hc_socket_gps" type="hc_socket_gps_node" name="hc_socket_gps_node" output="screen">
+    </node>
+</launch>

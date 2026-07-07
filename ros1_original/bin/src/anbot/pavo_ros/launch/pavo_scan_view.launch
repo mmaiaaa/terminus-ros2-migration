@@ -1,0 +1,8 @@
+<launch>
+  <arg name="filter" default="0" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pavo_ros)/rviz/pavo_scan.rviz" />
+  <node name="PavoScanNode" pkg="pavo_ros" type="pavo_scan_node" output="screen" >
+        <rosparam file="$(find pavo_ros)/launch/pavo_scan_param.yaml" command="load" />
+	<param name="parking_x" type="int" value="$(arg filter)" />
+  </node>
+</launch>

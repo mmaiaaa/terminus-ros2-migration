@@ -1,0 +1,4 @@
+
+input: rslidar_points              # 最大线速度
+min_z: 0.08
+max_z: 1.6

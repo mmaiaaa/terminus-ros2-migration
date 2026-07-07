@@ -1,0 +1,54 @@
+<launch>
+    <arg default="false" name="use_map_topic"/>
+    <arg default="scan" name="scan_topic"/>
+    <arg default="0.0" name="initial_pose_x"/>
+    <arg default="0.0" name="initial_pose_y"/>
+    <arg default="0.0" name="initial_pose_a"/>
+    <node type="amcl" pkg="amcl" name="amcl">
+        <param value="$(arg use_map_topic)" name="use_map_topic"/>
+        <!-- Publish scans from best pose at a max of 10 Hz -->
+        <param value="diff" name="odom_model_type"/>
+        
+        <param value="60.0" name="gui_publish_rate"/>
+        <param value="70" name="laser_max_beams"/>
+        <!--param value="5.5" name="laser_max_range"/ do not use this value, this will only user the laser data in 5.5m-->
+        <param value="300" name="min_particles"/>
+        <param value="600" name="max_particles"/>
+        <param value="0.05" name="kld_err"/>
+        <param value="0.99" name="kld_z"/>
+        <param value="0.2" name="odom_alpha1"/>
+        <param value="0.2" name="odom_alpha2"/>
+        <!-- translation std dev, m -->
+        <param value="4.0" name="odom_alpha3"/>
+        <param value="0.1" name="odom_alpha4"/>
+	<param value="0.0" name="odom_alpha5"/>
+        <param value="0.4" name="odom_alpha6"/>   <!--for APVS drift-->  
+        <param value="0.5" name="laser_z_hit"/>
+        <param value="0.05" name="laser_z_short"/>
+        <param value="0.05" name="laser_z_max"/>
+        <param value="0.5" name="laser_z_rand"/>
+        <param value="0.3" name="laser_sigma_hit"/>
+        <param value="0.1" name="laser_lambda_short"/>
+        <param value="likelihood_field" name="laser_model_type"/>
+        <!-- <param name="laser_model_type" value="beam"/> -->
+        <param value="2.0" name="laser_likelihood_max_dist"/>
+        <param value="0.12" name="update_min_d"/>
+        <param value="0.1" name="update_min_a"/>
+        <param value="odom" name="odom_frame_id"/>
+        <param value="base_footprint" name="base_frame_id"/>
+        <param value="1" name="resample_interval"/>
+        <param value="50" name="nomotion_update_interval"/>
+        <!-- Increase tolerance because the computer can get quite busy -->
+        <param value="1.0" name="transform_tolerance"/>
+        <param value="0.01" name="recovery_alpha_slow"/>
+        <param value="0.1" name="recovery_alpha_fast"/>
+        <param value="$(arg initial_pose_x)" name="initial_pose_x"/>
+        <param value="$(arg initial_pose_y)" name="initial_pose_y"/>
+        <param value="$(arg initial_pose_a)" name="initial_pose_a"/>
+        <remap from="scan" to="$(arg scan_topic)"/>
+	<param value="true" name="gps_help_mode"/>
+	<param value="0.2" name="smallmove_update_interval"/>
+	<param value="true" name="safe_mode"/>
+	<param value="0.0" name="filter_ob_dist"/>
+    </node>
+</launch>

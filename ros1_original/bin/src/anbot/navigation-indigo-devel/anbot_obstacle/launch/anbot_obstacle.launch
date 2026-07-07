@@ -1,0 +1,10 @@
+<launch>
+   <node pkg="anbot_obstacle" type="anbot_obstacle" name="anbot_obstacle">
+        <rosparam command="load" file="$(find anbot_obstacle)/param/anbot_obstacle.yaml"  />
+        <remap from="cmd_vel" to="anbot/cmd_vel"/>
+   </node>
+   
+   <node pkg="anbot_obstacle" type="multi_node" name="multi_node" respawn_delay="10"/>
+   
+</launch>
+

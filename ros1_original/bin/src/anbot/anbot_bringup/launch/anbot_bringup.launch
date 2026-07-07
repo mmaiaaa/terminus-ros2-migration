@@ -1,0 +1,49 @@
+<launch>
+
+  <!--Anbot urdf description-->
+  <include file="$(find anbot_bringup)/launch/includes/anbot_desciption.launch.xml"/>
+
+
+  
+  <!--hardware-->
+  <include file="$(find anbot_bringup)/launch/hardware.launch" />
+
+  <!--charge-->
+  <node pkg="charge" type="charge_node" name="charge_node" output="screen">
+  <param name="charge_full_level" type="int" value="80"/>
+  <param name="charge_full_voltage" type="double" value="54.1"/>
+  <param name="charge_full_milliampere" type="int" value="2000"/>
+  <param name="infred_recv_threshold" type="int" value="20"/>
+  <param name="find_roy_speed" type="double" value="0.25"/>
+  <param name="charge_vi_use"  type="bool"   value="false"/>
+  <param name="if_front_charge"  type="bool"   value="false"/>
+  <param name="walkout_range"    type="double"   value ="0.20" />
+  <param name="red_debug" type="bool" value="false" />
+  </node>
+  
+  <!--logpublic-->
+  <node pkg="public_log" type="public_log" name="public_log" output="screen"/>
+  
+  <!--makemap-->
+   <node pkg="anbot_makemap" type="anbot_makemap_node" name="anbot_makemap_node" >
+	<param name="isRecord" type="bool" value="true"/>
+   </node>
+	
+   
+  <!--small_map_node-->
+  <node pkg="anbot_small_map" type="anbot_small_map_node" name="anbot_small_map_node" >
+  <param name="isRecord" type="bool" value="true"/>
+  </node>
+  
+   
+   <!--detect-V1
+   <include file="$(find anbot_object_detection)/launch/detect.launch" />
+   <include file="$(find anbot_object_detection)/launch/learn.launch" />
+   -->
+  
+   <!--detect-V2-->
+   <include file="$(find obstacle_detector)/launch/a_demo.launch" />
+  
+   	 
+  
+</launch>

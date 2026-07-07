@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package>
+  <name>anbot_bringup</name>
+  <version>1.1.0</version>
+  <description>The anbot_bringup package</description>
+  <maintainer email="robot@todo.todo">raobo</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+</package>

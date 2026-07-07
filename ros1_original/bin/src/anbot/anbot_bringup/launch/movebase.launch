@@ -1,0 +1,10 @@
+
+<launch>
+
+  <!--调用move_base脚本-->
+  <include file="$(find anbot_bringup)/launch/includes/move_base.launch.xml"/>
+
+
+
+</launch>
+

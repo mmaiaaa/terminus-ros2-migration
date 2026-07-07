@@ -1,0 +1,24 @@
+﻿<launch>
+  <arg name="odom_topic" default="odom" />
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find anbot_navigation_config)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find anbot_navigation_config)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find anbot_navigation_config)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find anbot_navigation_config)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find anbot_navigation_config)/param/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find anbot_navigation_config)/param/move_base_params.yaml" command="load" />
+		<!-- 采用何种算法计算路径 -1走固定路线图png格式，应用博物馆，0: 走固定路线txt，应用戒毒所，，1：适应办公室等小环境，可以保证走廊最中间，却不适合大环境，速度慢 
+		2：适应大环境，不适合走廊等小环境，有贴边现象，3：使用建图时寻找路线算法，目前是代价地图膨胀区，4：自动建图算法，风险很大，目前不用}-->
+	<param name="kindOfPath" value="2"/>
+
+	<param name="safeRadius" value="0.55"/>
+	<param name="virpath_safeRadius" value="0.35"/>
+
+<!-- 
+    <param name="/NavfnROS/allow_unknown" value="false"/>
+-->
+
+    <!--remap from="cmd_vel" to="anbot_cmd_vel"/-->
+    <remap from="odom" to="$(arg odom_topic)"/>
+  </node>
+</launch>

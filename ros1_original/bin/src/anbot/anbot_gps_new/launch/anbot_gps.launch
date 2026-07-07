@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="anbot_gps" type="anbot_gps_node" name="anbot_gps_node"  output="screen">
+		<param name="mode" value="2" type="int"/> <!--0:原始模型 1:新线性模型 2:WGS84-->
+    </node>
+</launch>

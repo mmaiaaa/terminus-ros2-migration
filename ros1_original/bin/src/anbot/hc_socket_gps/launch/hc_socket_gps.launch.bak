@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="hc_socket_gps" type="hc_socket_gps_node" name="hc_socket_gps_node" output="screen">
+        <param name="serial_port" value="/dev/ttyS0" type="string" />
+        <param name="baudrate"    value="9600"   type="int" />
+        <param name="ifdebug"    value="true"   type="bool" />
+    </node>
+</launch>

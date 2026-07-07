@@ -1,0 +1,22 @@
+<launch>
+  <arg name="odom_topic" default="odom" />
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find anbot_navigation_config)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find anbot_navigation_config)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find anbot_navigation_config)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find anbot_navigation_config)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find anbot_navigation_config)/param/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find anbot_navigation_config)/param/move_base_params.yaml" command="load" />
+		<!-- 采用何种算法计算路径-1 : 表示用启发搜索，1：表示每次都生成势场地图 2：放弃使用，3：使用建图时寻找路线算法，目前是直线}-->
+	<param name="kindOfPath" value="3"/>
+	<param name="autoMapping" value="1"/>
+
+
+<!-- 
+    <param name="/NavfnROS/allow_unknown" value="false"/>
+-->
+
+    <!--remap from="cmd_vel" to="anbot_cmd_vel"/-->
+    <remap from="odom" to="$(arg odom_topic)"/>
+  </node>
+</launch>

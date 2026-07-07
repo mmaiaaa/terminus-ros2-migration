@@ -1,0 +1,14 @@
+<launch>
+    <!--data_type  0:calculated data    1:raw  data  -->
+    <!--debug_output  0:debug log off   1:debug log on-->
+    <!--serial_port   /dev/imu-->
+    <arg name="data_type"      default="0" />
+    <arg name="debug_output"   default="1" />  
+    <arg name="serial_port"    default="/dev/imu" />
+
+    <node pkg="gnw_imu_new" type="gnw_imu_new_node" name="gnw_imu_new_node"  output="screen">
+        <param name="data_type"     value="$(arg data_type)"    />
+        <param name="debug_output"  value="$(arg debug_output)"/>
+        <param name="serial_port"   value="$(arg serial_port)" />
+    </node>
+</launch>

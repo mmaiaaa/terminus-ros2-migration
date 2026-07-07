@@ -1,0 +1,233 @@
+#include "wheel_control.h"
+#include <iostream>
+#include <sys/signal.h>
+#include <string>
+#include "currenttime.h"
+
+#include <ros/ros.h>
+#include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
+#include <std_msgs/String.h>
+#include <geometry_msgs/Twist.h>
+#include <nav_msgs/Odometry.h>
+#include <std_msgs/Bool.h>
+#include <sensor_msgs/Imu.h>
+#include <std_msgs/Float64.h>
+#include <tf/transform_listener.h>
+
+using namespace std;
+
+/*宏定义*/
+#define PI_2 3.1415926*2 //2PI
+#define PI 3.141592 //PI
+//#define WHEEL_DIAMETER 0.410//轮径
+#define WHEEL_LEFT_DIAMETER (WHEEL_RIGHT_DIAMETER*1.001)
+#define WHEEL_RIGHT_DIAMETER (0.406707)
+#define ENCODER_WHEEL_RATIO 17//减速比
+#define PULSE_NUMBER 4000//转一圈脉冲采样数1000*4
+#define GUARDIAN_WHEEL_DIAMETER 0.490//小底盘两轮轴距/测试底盘：0.500 机器人上底盘：0.565
+
+Wheel_Control wheelControl;
+speeddatatype SpeedData;//从串口读入的结构体变量
+double leftWheel = 0.0;//读取的左轮速度
+double rightWheel = 0.0;//读取的右轮速度
+std_msgs::Bool emergencyStatus ;//读取的急停开关状态
+double yaw=0.0,first_yaw=0.0;
+
+/*接收imu消息回调函数*/
+void ImuCallback( const sensor_msgs::ImuConstPtr& data)
+{
+	static bool flag = false;
+	if(!flag){
+		first_yaw = tf::getYaw(data->orientation);
+		flag = true;
+	}else{
+    	yaw=tf::getYaw(data->orientation)-first_yaw;
+	}
+}
+
+/*接收上位机发送的速度的回调函数*/
+void CmdVelCallback( const geometry_msgs::TwistConstPtr& cmd_vel) {
+
+    double leftSpeed = (cmd_vel->linear.x - (cmd_vel->angular.z*GUARDIAN_WHEEL_DIAMETER)/2)*1000;
+	double rightSpeed = (cmd_vel->linear.x + (cmd_vel->angular.z*GUARDIAN_WHEEL_DIAMETER)/2)*1000;
+	wheelControl.SetSpeedData( leftSpeed ,rightSpeed );
+}
+
+/*接收传感器的充电状态数据*/
+void ReceiveSensorData(const std_msgs::String::ConstPtr& msgs)
+{
+	string strTemp(msgs->data);
+
+	if(strTemp.find("batteryState") >= 0)
+	{
+		char temp[3];
+		strTemp.copy(temp,2);	
+                temp[2] = 0;
+		char i = atoi(temp);		
+
+		if((i & 0x20) > 0)
+		{
+			wheelControl.SetSpeedData( 0 ,0 ,true);
+                        ROS_INFO("chassis says: battery is powered in now!");
+		}
+	}
+
+	if(strTemp.find("charge") >= 0)
+	{
+		char temp[3];
+		
+		strTemp.copy(temp,2,7);
+		temp[2] = 0;
+		char i = atoi(temp);		
+
+		if(i == 24)
+		{
+			//wheelControl.SetSpeedData( 0 ,0 ,true);
+			ROS_INFO("chassis says: charge 24 is found");
+		}
+	}
+		
+}
+
+/*获取左右轮速度值、急停开关状态*/
+void GetSpeed(void)
+{
+	wheelControl.ReadSpeedData(&SpeedData);
+	leftWheel = SpeedData.leftSpeed ;
+	rightWheel = SpeedData.rightSpeed ;
+    emergencyStatus.data = SpeedData.isBrake;
+}
+
+void Exit(int signal){
+   ros::shutdown();
+   exit(0);
+}
+
+/*切断电机供电*/
+void CutOffMotor(const std_msgs::String::ConstPtr& msgs)
+{
+        if(msgs->data == "yes")
+        {
+            wheelControl.SetSpeedData( 0 ,0 ,true);
+            ROS_INFO("cut off motor command is YES!");
+
+        }
+ }
+
+double gDistanceTotal = 0;
+
+int main( int argc, char** argv) {
+  
+	ros::init(argc, argv, "anbot_base");
+        ros::NodeHandle n;
+  	wheelControl.OpenCom("/dev/ttyS0");
+	wheelControl.Start(10000);
+	/*发布、接收主题初始化*/
+    ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 100);
+    ros::Publisher emergency_pub = n.advertise<std_msgs::Bool>("emergencyStatus", 100);
+	ros::Publisher baseMa =  n.advertise<std_msgs::Float64>("mapan_data", 100);   //jiaozhun ceshi yong
+	
+	ros::Subscriber sub = n.subscribe("cmd_vel", 100, CmdVelCallback);
+	ros::Subscriber sensor = n.subscribe("sensor_return", 100, ReceiveSensorData);
+    ros::Subscriber cutOffMotor = n.subscribe("cut_off_motor", 100, CutOffMotor);
+    ros::Subscriber imuSub = n.subscribe("/imu/data", 100, ImuCallback);
+	tf::TransformBroadcaster transform;
+	tf::TransformListener listener;
+	tf::StampedTransform transform2;
+    /*初始化码盘计算的位姿积分值x y*/
+	double x = 0.0;
+	double y = 0.0;
+	double th_ma = 0.0;
+    double last_yaw=0.0;//记录上一次的偏航角
+	ros::Rate rate (100);
+	while (n.ok()) {
+		GetSpeed();//获取左右轮脉冲采样数
+		emergency_pub.publish(emergencyStatus);//发布急停开关状态
+        ros::Time current_time= ros::Time::now();
+		/*计算时间间隔内左右轮行进距离*/
+		double delta_leftwheel=WHEEL_LEFT_DIAMETER*PI*leftWheel/(PULSE_NUMBER*ENCODER_WHEEL_RATIO);
+        double delta_rightwheel=WHEEL_RIGHT_DIAMETER*PI*rightWheel/(PULSE_NUMBER*ENCODER_WHEEL_RATIO);
+        double delta_distance = (delta_leftwheel + delta_rightwheel)/2;  
+		/*计算周期内位置、角度的值*/
+		double delta_th_ma = (delta_rightwheel - delta_leftwheel)/GUARDIAN_WHEEL_DIAMETER;
+		double delta_th = yaw-last_yaw;
+		//double delta_x = delta_distance * cos(yaw);
+		//double delta_y = delta_distance * sin(yaw);
+		th_ma += delta_th_ma;
+		double delta_x = delta_distance * cos(th_ma);
+		double delta_y = delta_distance * sin(th_ma);
+		
+		/*位置、角度积分*/
+		x += delta_x ;
+		y += delta_y ;		
+
+		gDistanceTotal += delta_distance;
+		std_msgs::Float64 maMsg;
+		maMsg.data = gDistanceTotal;
+		baseMa.publish(maMsg);
+			
+		geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th_ma);
+		geometry_msgs::Quaternion odom_quat_ma = tf::createQuaternionMsgFromYaw(th_ma);
+		th_ma = tf::getYaw(odom_quat_ma);
+		if(th_ma >= PI_2) th_ma-=PI_2;
+                else if(th_ma <= -PI_2) th_ma+=-PI_2;	
+       
+		//printf("x=%f,y=%f,yaw = %f,delta_ma=%f\n",x,y,yaw*180/PI,th_ma*180/PI);
+		//geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(yaw);
+		//发布odom-->base_footprint坐标系转换
+		geometry_msgs::TransformStamped odom_trans;
+		odom_trans.header.stamp = current_time;
+		odom_trans.header.frame_id = "odom";
+		odom_trans.child_frame_id = "base_footprint";
+		odom_trans.transform.translation.x = x;
+		odom_trans.transform.translation.y = y;
+		odom_trans.transform.translation.z = 0.0;
+		odom_trans.transform.rotation = odom_quat;
+		transform.sendTransform(odom_trans);
+		//发布主题/odom
+		nav_msgs::Odometry odom;
+		odom.header.stamp = current_time;
+		odom.header.frame_id = "odom";
+		odom.child_frame_id = "base_link";
+		odom.pose.pose.position.x = x;
+		odom.pose.pose.position.y = y;
+		odom.pose.pose.position.z = 0.0;
+		odom.pose.pose.orientation = odom_quat;
+ 		odom.twist.twist.linear.x = delta_distance/0.01;
+		odom.twist.twist.angular.z = delta_th/0.01;
+		odom.pose.covariance[0]  = 0.01;
+		odom.pose.covariance[7]  = 0.01;
+		odom.pose.covariance[14] = 99999;
+		odom.pose.covariance[21] = 99999;
+		odom.pose.covariance[28] = 99999;
+		odom.pose.covariance[35] = 0.01;
+		odom.twist.covariance[0] = 999999;
+		odom.twist.covariance[7] = 999999;
+		odom.twist.covariance[14] = 999999;
+		odom.twist.covariance[21] = 999999;
+		odom.twist.covariance[28] = 999999;
+		odom.twist.covariance[35] = 999999;
+		odom_pub.publish(odom);
+
+
+		/*try
+    	{
+      		//listener.lookupTransform("/map","/odom",ros::Time(0), transform2);
+			listener.lookupTransform("/map","/odom",ros::Time(0), transform2);
+			double xx  = transform2.getOrigin().x();
+        	double yy = transform2.getOrigin().y();
+        	double yawyaw = tf::getYaw(transform2.getRotation());
+			printf("odom ===> map : x=%f,y=%f,yaw=%f\n",xx,yy,yawyaw);
+    	}
+    	catch(tf2::LookupException &ex)
+    	{
+      		ROS_WARN_STREAM("base_node listenner  : " << ex.what());
+    	}*/
+
+        last_yaw=yaw;
+		ros::spinOnce();
+		rate.sleep();
+	}
+}
+

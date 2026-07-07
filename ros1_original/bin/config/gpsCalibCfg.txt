@@ -1,0 +1,13 @@
+date: 2019-12-10 14:28:03
+x_latitude_coefficient: -74509.155746
+x_longitude_coefficient: 77227.657160
+x_constant: 0.305930
+x_R2: 0.999657
+y_latitude_coefficient: 74285.248562
+y_longitude_coefficient: 92137.681926
+y_constant: -0.003520
+y_R2: 0.997571
+ori_x: -51.087545
+ori_y: -53.745562
+ori_latitude: 28.211829
+ori_longitude: 112.876173
