@@ -1,0 +1,21 @@
+# Build artifacts
+build/
+devel/
+install/
+log/
+
+# Archives
+*.tar
+*.tar.gz
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# ROS
+*.bag
