@@ -5,6 +5,7 @@ find_package(ament_cmake REQUIRED)
 
 add_library(anbot_chassis_transport
     src/mock_transport.cpp
+    src/serial_transport.cpp
 )
 
 target_include_directories(anbot_chassis_transport PUBLIC
@@ -47,8 +48,19 @@ if(BUILD_TESTING)
         test/test_mock_transport.cpp
     )
 
-    target_link_libraries(test_mock_transport
+    target_link_libraries(
+        test_mock_transport
         anbot_chassis_transport
+    )
+
+    ament_add_gtest(test_serial_transport
+        test/test_serial_transport.cpp
+    )
+
+    target_link_libraries(
+        test_serial_transport
+        anbot_chassis_transport
+        util
     )
 endif()
 
