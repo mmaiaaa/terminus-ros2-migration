@@ -1,0 +1,14 @@
+]633;E;echo "# Binary identification";553bf045-b241-495e-9e8e-1f8ba7232dd7]633;C# Binary identification
+
+## objects/anbot_base_node.cpp.o
+objects/anbot_base_node.cpp.o: ELF 64-bit LSB relocatable, ARM aarch64, version 1 (GNU/Linux), with debug_info, not stripped
+
+## objects/currenttime.cpp.o
+objects/currenttime.cpp.o: ELF 64-bit LSB relocatable, ARM aarch64, version 1 (SYSV), with debug_info, not stripped
+
+## objects/publicremotelog.cpp.o
+objects/publicremotelog.cpp.o: ELF 64-bit LSB relocatable, ARM aarch64, version 1 (GNU/Linux), with debug_info, not stripped
+
+## objects/wheel_control.cpp.o
+objects/wheel_control.cpp.o: ELF 64-bit LSB relocatable, ARM aarch64, version 1 (SYSV), with debug_info, not stripped
+
