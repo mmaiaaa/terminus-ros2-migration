@@ -23,13 +23,25 @@ target_include_directories(${PROJECT_NAME}
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
+add_executable(candump_replay
+  tools/candump_replay_main.cpp
+)
+
+target_link_libraries(candump_replay
+  ${PROJECT_NAME}
+)
+
+target_compile_features(candump_replay PUBLIC cxx_std_17)
+
 install(
   DIRECTORY include/
   DESTINATION include
 )
 
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS
+    ${PROJECT_NAME}
+    candump_replay
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
