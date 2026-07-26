@@ -12,6 +12,7 @@ add_library(${PROJECT_NAME}
   src/wheel_stream_parser.cpp
   src/chassis_can_protocol.cpp
   src/candump_parser.cpp
+  src/candump_replay.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -71,6 +72,14 @@ if(BUILD_TESTING)
   )
 
   target_link_libraries(test_candump_parser
+    ${PROJECT_NAME}
+  )
+
+  ament_add_gtest(test_candump_replay
+    test/test_candump_replay.cpp
+  )
+
+  target_link_libraries(test_candump_replay
     ${PROJECT_NAME}
   )
 endif()
