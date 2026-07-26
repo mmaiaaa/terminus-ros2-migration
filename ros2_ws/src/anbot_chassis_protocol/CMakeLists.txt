@@ -39,12 +39,15 @@ install(
 )
 
 install(
-  TARGETS
-    ${PROJECT_NAME}
-    candump_replay
+  TARGETS ${PROJECT_NAME}
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(
+  TARGETS candump_replay
   RUNTIME DESTINATION bin
 )
 

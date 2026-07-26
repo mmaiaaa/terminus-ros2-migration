@@ -2,10 +2,12 @@ cmake_minimum_required(VERSION 3.8)
 project(anbot_chassis_transport)
 
 find_package(ament_cmake REQUIRED)
+find_package(anbot_chassis_protocol REQUIRED)
 
 add_library(anbot_chassis_transport
     src/mock_transport.cpp
     src/serial_transport.cpp
+    src/socketcan_receiver.cpp
 )
 
 target_include_directories(anbot_chassis_transport PUBLIC
@@ -14,6 +16,11 @@ target_include_directories(anbot_chassis_transport PUBLIC
 )
 
 target_compile_features(anbot_chassis_transport PUBLIC cxx_std_17)
+
+ament_target_dependencies(
+    anbot_chassis_transport
+    anbot_chassis_protocol
+)
 
 target_compile_options(anbot_chassis_transport PRIVATE
     -Wall
@@ -61,6 +68,15 @@ if(BUILD_TESTING)
         test_serial_transport
         anbot_chassis_transport
         util
+    )
+
+    ament_add_gtest(test_socketcan_receiver
+        test/test_socketcan_receiver.cpp
+    )
+
+    target_link_libraries(
+        test_socketcan_receiver
+        anbot_chassis_transport
     )
 endif()
 
