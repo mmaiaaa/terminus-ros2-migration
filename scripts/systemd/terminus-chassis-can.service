@@ -1,0 +1,24 @@
+[Unit]
+Description=Terminus read-only chassis CAN receiver
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+
+# Update these values for the final robot computer.
+User=terminus
+WorkingDirectory=/home/terminus/TerminusRobot
+
+Environment=CAN_INTERFACE=can0
+
+ExecStart=/home/terminus/TerminusRobot/scripts/start_chassis_read_only.sh ${CAN_INTERFACE}
+
+Restart=on-failure
+RestartSec=3
+
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
