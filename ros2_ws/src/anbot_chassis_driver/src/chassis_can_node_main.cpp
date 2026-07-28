@@ -1,0 +1,15 @@
+#include <memory>
+
+#include "anbot_chassis_driver/chassis_can_node.hpp"
+#include "rclcpp/rclcpp.hpp"
+
+int main(int argc, char* argv[])
+{
+    rclcpp::init(argc, argv);
+
+    rclcpp::spin(
+        std::make_shared<anbot::ChassisCanNode>());
+
+    rclcpp::shutdown();
+    return 0;
+}
