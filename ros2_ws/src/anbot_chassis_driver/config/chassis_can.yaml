@@ -2,7 +2,7 @@ anbot_chassis_can_node:
   ros__parameters:
     can_interface: can0
     odom_frame_id: odom
-    base_frame_id: base_link
+    base_frame_id: base_footprint
 
     # Poll the non-blocking CAN socket every 10 milliseconds.
     poll_period_ms: 10

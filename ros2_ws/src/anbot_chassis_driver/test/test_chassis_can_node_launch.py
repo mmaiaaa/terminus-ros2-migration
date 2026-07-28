@@ -47,7 +47,7 @@ def generate_test_description():
             {
                 "can_interface": "vcan0",
                 "odom_frame_id": "odom",
-                "base_frame_id": "base_link",
+                "base_frame_id": "base_footprint",
                 "poll_period_ms": 10,
                 "maximum_frames_per_poll": 64,
                 "diagnostic_period_ms": 200,
@@ -263,7 +263,7 @@ class TestChassisCanNode(unittest.TestCase):
         )
         self.assertEqual(
             odometry.child_frame_id,
-            "base_link",
+            "base_footprint",
         )
 
         self.assertAlmostEqual(

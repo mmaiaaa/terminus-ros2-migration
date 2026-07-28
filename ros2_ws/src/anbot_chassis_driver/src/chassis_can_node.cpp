@@ -65,7 +65,7 @@ ChassisCanNode::ChassisCanNode(
       base_frame_id_(
           declare_parameter<std::string>(
               "base_frame_id",
-              "base_link")),
+              "base_footprint")),
       poll_period_ms_(
           declare_parameter<int>(
               "poll_period_ms",
