@@ -10,3 +10,9 @@ anbot_chassis_can_node:
     # Prevent one timer callback from processing an unlimited
     # number of queued CAN frames.
     maximum_frames_per_poll: 64
+
+    # Publish standard ROS diagnostics once per second.
+    diagnostic_period_ms: 1000
+
+    # Warn when no valid chassis frame has arrived for this long.
+    stale_timeout_ms: 2000

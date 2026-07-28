@@ -15,6 +15,8 @@ import launch_testing.actions
 import pytest
 import rclpy
 from rclpy.qos import qos_profile_sensor_data
+from diagnostic_msgs.msg import DiagnosticArray
+from diagnostic_msgs.msg import DiagnosticStatus
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Int16MultiArray
 
@@ -48,6 +50,8 @@ def generate_test_description():
                 "base_frame_id": "base_link",
                 "poll_period_ms": 10,
                 "maximum_frames_per_poll": 64,
+                "diagnostic_period_ms": 200,
+                "stale_timeout_ms": 500,
             }
         ],
     )
@@ -82,6 +86,7 @@ class TestChassisCanNode(unittest.TestCase):
 
         cls.odometry_message = None
         cls.wheel_speed_message = None
+        cls.diagnostic_messages = []
 
         cls.odometry_subscription = cls.node.create_subscription(
             Odometry,
@@ -95,6 +100,13 @@ class TestChassisCanNode(unittest.TestCase):
             "/chassis/wheel_speeds",
             cls._wheel_speed_callback,
             qos_profile_sensor_data,
+        )
+
+        cls.diagnostics_subscription = cls.node.create_subscription(
+            DiagnosticArray,
+            "/diagnostics",
+            cls._diagnostics_callback,
+            10,
         )
 
         cls.executor_thread = threading.Thread(
@@ -127,6 +139,33 @@ class TestChassisCanNode(unittest.TestCase):
     def _wheel_speed_callback(cls, message):
         cls.wheel_speed_message = message
 
+    @classmethod
+    def _diagnostics_callback(cls, message):
+        cls.diagnostic_messages.append(message)
+
+    @staticmethod
+    def _diagnostic_values(status):
+        return {
+            item.key: item.value
+            for item in status.values
+        }
+
+    @classmethod
+    def _wait_for_diagnostic(cls, predicate, timeout=5.0):
+        deadline = time.monotonic() + timeout
+
+        while time.monotonic() < deadline:
+            for message in reversed(cls.diagnostic_messages):
+                for status in message.status:
+                    if predicate(status):
+                        return status
+
+            time.sleep(0.05)
+
+        raise AssertionError(
+            "Timed out waiting for expected diagnostic status"
+        )
+
     @staticmethod
     def _send_can_frame(can_socket, frame_id, payload):
         if len(payload) != 8:
@@ -157,6 +196,24 @@ class TestChassisCanNode(unittest.TestCase):
             time.sleep(0.05)
         else:
             self.fail("Chassis publishers were not discovered")
+
+        initial_status = self._wait_for_diagnostic(
+            lambda status: (
+                status.level == DiagnosticStatus.WARN
+                and status.message
+                == "Interface open; no valid chassis frame received"
+            )
+        )
+
+        initial_values = self._diagnostic_values(initial_status)
+
+        self.assertEqual(initial_values["can_interface"], "vcan0")
+        self.assertEqual(initial_values["interface_open"], "true")
+        self.assertEqual(initial_values["decoded_frame_count"], "0")
+        self.assertEqual(
+            initial_values["seconds_since_last_decoded_frame"],
+            "never",
+        )
 
         with socket.socket(
             socket.PF_CAN,
@@ -241,6 +298,44 @@ class TestChassisCanNode(unittest.TestCase):
         self.assertEqual(
             list(self.wheel_speed_message.data),
             [-174, 176, 17, 34, 51, 68],
+        )
+
+        healthy_status = self._wait_for_diagnostic(
+            lambda status: (
+                status.level == DiagnosticStatus.OK
+                and status.message
+                == "Receiving valid chassis CAN frames"
+            )
+        )
+
+        healthy_values = self._diagnostic_values(healthy_status)
+
+        self.assertEqual(
+            healthy_values["received_frame_count"],
+            "3",
+        )
+        self.assertEqual(
+            healthy_values["decoded_frame_count"],
+            "3",
+        )
+        self.assertEqual(
+            healthy_values["unknown_frame_count"],
+            "0",
+        )
+
+        stale_status = self._wait_for_diagnostic(
+            lambda status: (
+                status.level == DiagnosticStatus.WARN
+                and status.message == "Chassis CAN data is stale"
+            ),
+            timeout=3.0,
+        )
+
+        stale_values = self._diagnostic_values(stale_status)
+
+        self.assertEqual(
+            stale_values["decoded_frame_count"],
+            "3",
         )
 
 

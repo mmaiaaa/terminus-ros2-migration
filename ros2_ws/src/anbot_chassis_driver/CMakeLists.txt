@@ -4,6 +4,7 @@ project(anbot_chassis_driver)
 find_package(ament_cmake REQUIRED)
 find_package(anbot_chassis_protocol REQUIRED)
 find_package(anbot_chassis_transport REQUIRED)
+find_package(diagnostic_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -43,6 +44,7 @@ target_link_libraries(
 
 ament_target_dependencies(
     anbot_chassis_can_node_library
+    diagnostic_msgs
     geometry_msgs
     nav_msgs
     rclcpp
@@ -120,6 +122,7 @@ ament_export_include_directories(include)
 ament_export_dependencies(
     anbot_chassis_protocol
     anbot_chassis_transport
+    diagnostic_msgs
     geometry_msgs
     nav_msgs
     rclcpp

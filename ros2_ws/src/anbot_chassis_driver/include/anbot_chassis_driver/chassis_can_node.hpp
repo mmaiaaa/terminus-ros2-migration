@@ -9,6 +9,7 @@
 
 #include "anbot_chassis_driver/chassis_can_driver.hpp"
 
+#include "diagnostic_msgs/msg/diagnostic_array.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -31,6 +32,8 @@ private:
 
     void publishWheelSpeedsIfUpdated();
 
+    void publishDiagnostics();
+
     static geometry_msgs::msg::Quaternion
     quaternionFromYaw(double yaw);
 
@@ -40,6 +43,8 @@ private:
 
     int poll_period_ms_ = 10;
     int maximum_frames_per_poll_ = 64;
+    int diagnostic_period_ms_ = 1000;
+    int stale_timeout_ms_ = 2000;
 
     ChassisCanDriver driver_;
 
@@ -47,10 +52,18 @@ private:
         odometry_publisher_;
 
     rclcpp::Publisher<
+        diagnostic_msgs::msg::DiagnosticArray>::SharedPtr
+        diagnostics_publisher_;
+
+    rclcpp::Publisher<
         std_msgs::msg::Int16MultiArray>::SharedPtr
         wheel_speeds_publisher_;
 
     rclcpp::TimerBase::SharedPtr poll_timer_;
+    rclcpp::TimerBase::SharedPtr diagnostics_timer_;
+
+    std::optional<rclcpp::Time> last_decoded_frame_time_;
+    std::size_t previous_decoded_frame_count_ = 0U;
 
     std::optional<ChassisPosition> last_published_position_;
     std::optional<ChassisHeading> last_published_heading_;

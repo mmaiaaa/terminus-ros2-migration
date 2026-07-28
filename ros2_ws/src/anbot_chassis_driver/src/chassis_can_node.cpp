@@ -1,8 +1,12 @@
 #include "anbot_chassis_driver/chassis_can_node.hpp"
 
+#include "diagnostic_msgs/msg/diagnostic_status.hpp"
+#include "diagnostic_msgs/msg/key_value.hpp"
+
 #include <algorithm>
 #include <cmath>
 #include <functional>
+#include <string>
 #include <utility>
 
 namespace anbot
@@ -70,11 +74,25 @@ ChassisCanNode::ChassisCanNode(
           declare_parameter<int>(
               "maximum_frames_per_poll",
               64)),
+      diagnostic_period_ms_(
+          declare_parameter<int>(
+              "diagnostic_period_ms",
+              1000)),
+      stale_timeout_ms_(
+          declare_parameter<int>(
+              "stale_timeout_ms",
+              2000)),
       driver_(makeConfiguration(can_interface_))
 {
     poll_period_ms_ = std::max(poll_period_ms_, 1);
     maximum_frames_per_poll_ =
         std::max(maximum_frames_per_poll_, 1);
+
+    diagnostic_period_ms_ =
+        std::max(diagnostic_period_ms_, 100);
+
+    stale_timeout_ms_ =
+        std::max(stale_timeout_ms_, 1);
 
     odometry_publisher_ =
         create_publisher<nav_msgs::msg::Odometry>(
@@ -85,6 +103,12 @@ ChassisCanNode::ChassisCanNode(
         create_publisher<std_msgs::msg::Int16MultiArray>(
             "chassis/wheel_speeds",
             rclcpp::SensorDataQoS());
+
+    diagnostics_publisher_ =
+        create_publisher<
+            diagnostic_msgs::msg::DiagnosticArray>(
+            "diagnostics",
+            rclcpp::QoS(10));
 
     if (!driver_.open())
     {
@@ -107,6 +131,12 @@ ChassisCanNode::ChassisCanNode(
         std::bind(
             &ChassisCanNode::pollCan,
             this));
+
+    diagnostics_timer_ = create_wall_timer(
+        std::chrono::milliseconds(diagnostic_period_ms_),
+        std::bind(
+            &ChassisCanNode::publishDiagnostics,
+            this));
 }
 
 void ChassisCanNode::pollCan()
@@ -119,6 +149,16 @@ void ChassisCanNode::pollCan()
     driver_.poll(
         static_cast<std::size_t>(
             maximum_frames_per_poll_));
+
+    const std::size_t decoded_frame_count =
+        driver_.decodedFrameCount();
+
+    if (decoded_frame_count > previous_decoded_frame_count_)
+    {
+        last_decoded_frame_time_ = now();
+    }
+
+    previous_decoded_frame_count_ = decoded_frame_count;
 
     publishOdometryIfReady();
     publishWheelSpeedsIfUpdated();
@@ -213,6 +253,117 @@ void ChassisCanNode::publishWheelSpeedsIfUpdated()
 
     last_published_wheel_speeds_ =
         wheel_speeds;
+}
+
+void ChassisCanNode::publishDiagnostics()
+{
+    diagnostic_msgs::msg::DiagnosticArray message;
+    message.header.stamp = now();
+
+    diagnostic_msgs::msg::DiagnosticStatus status;
+
+    status.name = "Terminus chassis CAN receiver";
+    status.hardware_id = can_interface_;
+
+    double seconds_since_last_decoded_frame = -1.0;
+
+    if (!driver_.isOpen())
+    {
+        status.level =
+            diagnostic_msgs::msg::DiagnosticStatus::ERROR;
+
+        status.message =
+            "SocketCAN interface is not open";
+    }
+    else if (!last_decoded_frame_time_.has_value())
+    {
+        status.level =
+            diagnostic_msgs::msg::DiagnosticStatus::WARN;
+
+        status.message =
+            "Interface open; no valid chassis frame received";
+    }
+    else
+    {
+        seconds_since_last_decoded_frame =
+            (now() - *last_decoded_frame_time_).seconds();
+
+        const double stale_timeout_seconds =
+            static_cast<double>(stale_timeout_ms_) / 1000.0;
+
+        if (
+            seconds_since_last_decoded_frame >
+            stale_timeout_seconds)
+        {
+            status.level =
+                diagnostic_msgs::msg::DiagnosticStatus::WARN;
+
+            status.message =
+                "Chassis CAN data is stale";
+        }
+        else
+        {
+            status.level =
+                diagnostic_msgs::msg::DiagnosticStatus::OK;
+
+            status.message =
+                "Receiving valid chassis CAN frames";
+        }
+    }
+
+    const auto add_value =
+        [&status](
+            const std::string& key,
+            const std::string& value)
+        {
+            diagnostic_msgs::msg::KeyValue item;
+            item.key = key;
+            item.value = value;
+            status.values.push_back(item);
+        };
+
+    add_value("can_interface", can_interface_);
+
+    add_value(
+        "interface_open",
+        driver_.isOpen() ? "true" : "false");
+
+    add_value(
+        "last_socket_error",
+        std::to_string(driver_.lastSocketError()));
+
+    add_value(
+        "received_frame_count",
+        std::to_string(driver_.receivedFrameCount()));
+
+    add_value(
+        "decoded_frame_count",
+        std::to_string(driver_.decodedFrameCount()));
+
+    add_value(
+        "unknown_frame_count",
+        std::to_string(driver_.unknownFrameCount()));
+
+    if (seconds_since_last_decoded_frame < 0.0)
+    {
+        add_value(
+            "seconds_since_last_decoded_frame",
+            "never");
+    }
+    else
+    {
+        add_value(
+            "seconds_since_last_decoded_frame",
+            std::to_string(
+                seconds_since_last_decoded_frame));
+    }
+
+    add_value(
+        "stale_timeout_ms",
+        std::to_string(stale_timeout_ms_));
+
+    message.status.push_back(status);
+    diagnostics_publisher_->publish(message);
 }
 
 geometry_msgs::msg::Quaternion
