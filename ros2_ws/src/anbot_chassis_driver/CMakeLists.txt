@@ -103,6 +103,13 @@ install(
     DESTINATION include
 )
 
+install(
+    DIRECTORY
+        config
+        launch
+    DESTINATION share/${PROJECT_NAME}
+)
+
 ament_export_targets(
     export_anbot_chassis_driver
     HAS_LIBRARY_TARGET
@@ -121,6 +128,12 @@ ament_export_dependencies(
 
 if(BUILD_TESTING)
     find_package(ament_cmake_gtest REQUIRED)
+    find_package(launch_testing_ament_cmake REQUIRED)
+
+    add_launch_test(
+        test/test_chassis_can_node_launch.py
+        TIMEOUT 30
+    )
 
     ament_add_gtest(test_chassis_driver
         test/test_chassis_driver.cpp

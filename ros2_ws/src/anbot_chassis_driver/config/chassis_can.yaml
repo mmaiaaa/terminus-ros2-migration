@@ -1,0 +1,12 @@
+anbot_chassis_can_node:
+  ros__parameters:
+    can_interface: can0
+    odom_frame_id: odom
+    base_frame_id: base_link
+
+    # Poll the non-blocking CAN socket every 10 milliseconds.
+    poll_period_ms: 10
+
+    # Prevent one timer callback from processing an unlimited
+    # number of queued CAN frames.
+    maximum_frames_per_poll: 64
