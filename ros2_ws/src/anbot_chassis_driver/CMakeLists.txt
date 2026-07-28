@@ -7,6 +7,7 @@ find_package(anbot_chassis_transport REQUIRED)
 
 add_library(anbot_chassis_driver
     src/chassis_driver.cpp
+    src/chassis_can_driver.cpp
 )
 
 target_include_directories(anbot_chassis_driver PUBLIC
@@ -67,6 +68,21 @@ if(BUILD_TESTING)
 
     ament_target_dependencies(
         test_chassis_driver
+        anbot_chassis_protocol
+        anbot_chassis_transport
+    )
+
+    ament_add_gtest(test_chassis_can_driver
+        test/test_chassis_can_driver.cpp
+    )
+
+    target_link_libraries(
+        test_chassis_can_driver
+        anbot_chassis_driver
+    )
+
+    ament_target_dependencies(
+        test_chassis_can_driver
         anbot_chassis_protocol
         anbot_chassis_transport
     )
