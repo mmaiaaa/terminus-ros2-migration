@@ -82,6 +82,54 @@ ChassisCanNode::ChassisCanNode(
           declare_parameter<int>(
               "stale_timeout_ms",
               2000)),
+      pose_covariance_x_(
+          declare_parameter<double>(
+              "pose_covariance.x",
+              0.01)),
+      pose_covariance_y_(
+          declare_parameter<double>(
+              "pose_covariance.y",
+              0.01)),
+      pose_covariance_z_(
+          declare_parameter<double>(
+              "pose_covariance.z",
+              99999.0)),
+      pose_covariance_roll_(
+          declare_parameter<double>(
+              "pose_covariance.roll",
+              99999.0)),
+      pose_covariance_pitch_(
+          declare_parameter<double>(
+              "pose_covariance.pitch",
+              99999.0)),
+      pose_covariance_yaw_(
+          declare_parameter<double>(
+              "pose_covariance.yaw",
+              0.01)),
+      twist_covariance_x_(
+          declare_parameter<double>(
+              "twist_covariance.x",
+              999999.0)),
+      twist_covariance_y_(
+          declare_parameter<double>(
+              "twist_covariance.y",
+              999999.0)),
+      twist_covariance_z_(
+          declare_parameter<double>(
+              "twist_covariance.z",
+              999999.0)),
+      twist_covariance_roll_(
+          declare_parameter<double>(
+              "twist_covariance.roll",
+              999999.0)),
+      twist_covariance_pitch_(
+          declare_parameter<double>(
+              "twist_covariance.pitch",
+              999999.0)),
+      twist_covariance_yaw_(
+          declare_parameter<double>(
+              "twist_covariance.yaw",
+              999999.0)),
       driver_(makeConfiguration(can_interface_))
 {
     poll_period_ms_ = std::max(poll_period_ms_, 1);
@@ -208,6 +256,32 @@ void ChassisCanNode::publishOdometryIfReady()
     message.pose.pose.orientation =
         quaternionFromYaw(
             static_cast<double>(heading->theta));
+
+    message.pose.covariance[0] =
+        pose_covariance_x_;
+    message.pose.covariance[7] =
+        pose_covariance_y_;
+    message.pose.covariance[14] =
+        pose_covariance_z_;
+    message.pose.covariance[21] =
+        pose_covariance_roll_;
+    message.pose.covariance[28] =
+        pose_covariance_pitch_;
+    message.pose.covariance[35] =
+        pose_covariance_yaw_;
+
+    message.twist.covariance[0] =
+        twist_covariance_x_;
+    message.twist.covariance[7] =
+        twist_covariance_y_;
+    message.twist.covariance[14] =
+        twist_covariance_z_;
+    message.twist.covariance[21] =
+        twist_covariance_roll_;
+    message.twist.covariance[28] =
+        twist_covariance_pitch_;
+    message.twist.covariance[35] =
+        twist_covariance_yaw_;
 
     odometry_publisher_->publish(message);
 

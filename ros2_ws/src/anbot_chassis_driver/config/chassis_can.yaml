@@ -16,3 +16,22 @@ anbot_chassis_can_node:
 
     # Warn when no valid chassis frame has arrived for this long.
     stale_timeout_ms: 2000
+
+    # Diagonal pose covariance preserved from the original ROS 1 node.
+    pose_covariance:
+      x: 0.01
+      y: 0.01
+      z: 99999.0
+      roll: 99999.0
+      pitch: 99999.0
+      yaw: 0.01
+
+    # The current node does not yet calculate twist, so velocity
+    # measurements remain highly uncertain.
+    twist_covariance:
+      x: 999999.0
+      y: 999999.0
+      z: 999999.0
+      roll: 999999.0
+      pitch: 999999.0
+      yaw: 999999.0

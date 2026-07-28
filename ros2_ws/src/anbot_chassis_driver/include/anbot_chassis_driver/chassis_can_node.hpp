@@ -46,6 +46,20 @@ private:
     int diagnostic_period_ms_ = 1000;
     int stale_timeout_ms_ = 2000;
 
+    double pose_covariance_x_ = 0.01;
+    double pose_covariance_y_ = 0.01;
+    double pose_covariance_z_ = 99999.0;
+    double pose_covariance_roll_ = 99999.0;
+    double pose_covariance_pitch_ = 99999.0;
+    double pose_covariance_yaw_ = 0.01;
+
+    double twist_covariance_x_ = 999999.0;
+    double twist_covariance_y_ = 999999.0;
+    double twist_covariance_z_ = 999999.0;
+    double twist_covariance_roll_ = 999999.0;
+    double twist_covariance_pitch_ = 999999.0;
+    double twist_covariance_yaw_ = 999999.0;
+
     ChassisCanDriver driver_;
 
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr

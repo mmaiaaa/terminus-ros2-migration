@@ -295,6 +295,55 @@ class TestChassisCanNode(unittest.TestCase):
             places=6,
         )
 
+        expected_pose_covariance = {
+            0: 0.01,
+            7: 0.01,
+            14: 99999.0,
+            21: 99999.0,
+            28: 99999.0,
+            35: 0.01,
+        }
+
+        expected_twist_covariance = {
+            0: 999999.0,
+            7: 999999.0,
+            14: 999999.0,
+            21: 999999.0,
+            28: 999999.0,
+            35: 999999.0,
+        }
+
+        for index, value in expected_pose_covariance.items():
+            self.assertEqual(
+                odometry.pose.covariance[index],
+                value,
+            )
+
+        for index, value in expected_twist_covariance.items():
+            self.assertEqual(
+                odometry.twist.covariance[index],
+                value,
+            )
+
+        pose_diagonal_indices = set(
+            expected_pose_covariance.keys()
+        )
+        twist_diagonal_indices = set(
+            expected_twist_covariance.keys()
+        )
+
+        for index, value in enumerate(
+            odometry.pose.covariance
+        ):
+            if index not in pose_diagonal_indices:
+                self.assertEqual(value, 0.0)
+
+        for index, value in enumerate(
+            odometry.twist.covariance
+        ):
+            if index not in twist_diagonal_indices:
+                self.assertEqual(value, 0.0)
+
         self.assertEqual(
             list(self.wheel_speed_message.data),
             [-174, 176, 17, 34, 51, 68],
